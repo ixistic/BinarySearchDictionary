@@ -1,6 +1,3 @@
-// This program demonstrates the binarySearch function, which
-// performs a binary search on an integer array.
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -25,7 +22,6 @@ typedef struct word
 {
 	int id;
 	string text;
-	string binary;
 } word;
 
 struct less_than_key
@@ -75,17 +71,7 @@ string UnicodeToUTF8(unsigned int codepoint)
   return out;
 }
 
-string toBinary(string word) {
-	string binary_outputInformations;
-	for (size_t j = 0; j < word.size(); ++j)
-	{
-		bitset<8> b(word.c_str()[j]);
-		binary_outputInformations+= b.to_string();
-	}
-	return binary_outputInformations;
-}
-
-int binarySearch(string dict[], int size, string value)
+int binarySearch(string* dict, int size, string value)
 {
 	int first = 0;
 	int last = size - 1;
@@ -132,8 +118,6 @@ vector<word> loadDict(string fileName){
     word x;
     x.id = st.id;
     x.text = text;
-		string temp = toBinary(text);
-		x.binary = temp;
     dict.push_back(x);
     file.ignore(1);
   }
@@ -159,22 +143,18 @@ int main()
     int results;
   	bool check = false;
 	  vector<string> sep = split(line, ' ');
-		string binary = toBinary(sep[3]);
-		texts[size] = binary;
-		texts2[size] = sep[3];
+		texts[size] = sep[3];
 		size++;
   }
 	string wordInDict[188387];
 	for(int i=0;i<dict.size();i++){
 		wordInDict[i] = dict[i].text;
-		// cout << wordInDict[i] <<endl;
-		// getchar();
 	}
 	clock_t c1 = clock();
 	for(int i=0;i<size;i++){
-		int results = binarySearch(wordInDict,188387,texts2[i]);
+		int results = binarySearch(wordInDict,dict.size(),texts[i]);
 		if (results == -1){
-      cout << "Not found: "<< texts2[i] << endl;
+      cout << "Not found: "<< texts[i] << endl;
       countNotFound++;
     }
     else
@@ -189,21 +169,16 @@ int main()
   cout << "Not Found: " << countNotFound << endl;
   cout << "Time: " << diff << " seconds" << endl;
 
-  // string input;
-  // cout << "Please enter word: ";
-  // getline(cin, input);
-  // clock_t c1 = clock();
-  // results = binarySearch(dict, dict.size(), input);
-  // clock_t c2 = clock();
-  // float diff = (c2 - c1) *1.0 / CLOCKS_PER_SEC;
-  // cout << "Time: " << diff << " seconds" << endl;
-  // //
-  // if (results == -1)
-  //   cout << "That name does not exist in the array.\n";
-  // else
-  // {
-  //   cout << "That name is found at element " << results;
-  //   cout << " in the array.\n";
-  // }
+  string input;
+  cout << "Please enter word: ";
+  getline(cin, input);
+  int results = binarySearch(wordInDict, dict.size(), input);
+  if (results == -1)
+    cout << "That name does not exist in the array.\n";
+  else
+  {
+    cout << "That name is found at element " << results;
+    cout << " in the array.\n";
+  }
   return 0;
 }
